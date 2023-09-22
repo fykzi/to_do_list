@@ -1,9 +1,9 @@
 from fastapi import Depends
 from sqlalchemy.orm import Session
-from services import create_and_get_user_id
-from utils import get_db
+from app.services import create_and_get_user_id
+from app.utils import get_db
 
-from config import create_app
+from app.config import create_app
 
 
 app = create_app()

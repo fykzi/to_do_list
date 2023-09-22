@@ -1,5 +1,5 @@
-import models
-from database import engine
+from app import models
+from app.database import engine
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI
 
@@ -7,7 +7,7 @@ from fastapi import FastAPI
 allow_origins = ["*"]
 
 
-def create_app():
+def create_app() -> FastAPI:
     """Создание приложения FastAPI"""
     app = FastAPI()
 
