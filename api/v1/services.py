@@ -12,12 +12,7 @@ async def _create_new_user(db: AsyncSession, response: Response) -> dict:
             user_dal = UserDAL(session)
             new_user = await user_dal.create_user()
             user_id = new_user.user_id
-            response.set_cookie(
-                "user_id",
-                user_id,
-                max_age=1_000_000_000,
-                samesite=False,
-            )
+            response.set_cookie("user_id", user_id, max_age=1_000_000_000)
             message = {"message": "success"}
             return message
 
