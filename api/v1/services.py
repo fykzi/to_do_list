@@ -1,16 +1,20 @@
 from sqlalchemy.ext.asyncio import AsyncSession
-from api.v1.shemas import User, Task, ShowTask, UpdateTask
+from api.v1.shemas import Task, ShowTask, UpdateTask
 from database.dals import UserDAL, TaskDal
+from fastapi import Response
 
 from typing import List
 
 
-async def _create_new_user(db: AsyncSession) -> User:
+async def _create_new_user(db: AsyncSession, response: Response) -> dict:
     async with db as session:
         async with session.begin():
             user_dal = UserDAL(session)
             new_user = await user_dal.create_user()
-            return User(user_id=str(new_user.user_id))
+            user_id = new_user.user_id
+            response.set_cookie("user_id", user_id, max_age=1_000_000_000)
+            message = {"message": "success"}
+            return message
 
 
 async def _create_new_task(db: AsyncSession, task_info: Task, user_id: str) -> dict:
