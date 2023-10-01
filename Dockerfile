@@ -8,8 +8,4 @@ RUN pip install --no-cache-dir --upgrade -r /to_do_list/requirements.txt
 
 COPY . /to_do_list
 
-RUN alembic revision --autogenerate -m 'fisrt'
-
-RUN alembic upgrade heads
-
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "15400"]
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8010"]
