@@ -56,7 +56,9 @@ from pathlib import Path
 
 app = FastAPI(title="To do list")
 
-app.add_middleware(CORSMiddleware, allow_origins=settings.ALLOW_ORIGINS)
+app.add_middleware(
+    CORSMiddleware, allow_origins=settings.ALLOW_ORIGINS, allow_credentials=True
+)
 
 
 main_api_router = APIRouter()
