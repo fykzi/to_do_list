@@ -1,11 +1,15 @@
 FROM python:3
 
-WORKDIR /code
+WORKDIR /to_do_list
 
-COPY ./requirements.txt /code/requirements.txt
+COPY ./requirements.txt /to_do_list/requirements.txt
 
-RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
+RUN pip install --no-cache-dir --upgrade -r /to_do_list/requirements.txt
 
-COPY ./app /code/app
+COPY . /to_do_list
 
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8001"]
+RUN alembic revision --autogenerate -m 'fisrt'
+
+RUN alembic upgrade heads
+
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "15400"]

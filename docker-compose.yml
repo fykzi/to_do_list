@@ -1,0 +1,9 @@
+version: '3'
+services:
+    core_api:
+        build: .
+        container_name: 'to_do_list'
+        ports:
+            - "8010:15400"
+        volumes:
+            - ./app/:/app
