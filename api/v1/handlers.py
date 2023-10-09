@@ -36,7 +36,7 @@ async def create_task(
 async def get_tasks(user_id: str, db: AsyncSession = Depends(get_db)) -> List[ShowTask]:
     res = await _get_tasks(db, user_id)
     if not res:
-        raise HTTPException(status_code=400, detail="Не удалоcь получить ваши задачи")
+        raise HTTPException(status_code=400, detail="Create first task")
     return res
 
 

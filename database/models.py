@@ -27,7 +27,7 @@ class Task(Base):
 
     task_id: Mapped[int] = mapped_column(primary_key=True)
     title: Mapped[str] = mapped_column(String(50))
-    description: Mapped[str]
+    description: Mapped[str] = mapped_column(nullable=True)
     status: Mapped[bool] = mapped_column(default=False)
     created_at = Column(DateTime)
     updated_at = Column(DateTime, nullable=True)

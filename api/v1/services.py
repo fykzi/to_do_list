@@ -6,7 +6,7 @@ from fastapi import Response
 from typing import List
 
 
-async def _create_new_user(db: AsyncSession, response: Response) -> dict:
+async def _create_new_user(db: AsyncSession) -> dict:
     async with db as session:
         async with session.begin():
             user_dal = UserDAL(session)
