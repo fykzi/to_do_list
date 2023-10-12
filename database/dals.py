@@ -1,9 +1,10 @@
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, desc, delete, and_, update
-
-from database.models import User, Task
-from api.v1.shemas import Task as TaskShema
 from datetime import datetime
+
+from sqlalchemy import and_, delete, desc, select, update
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from api.v1.tasks.shemas import Task as TaskShema
+from database.models import Task, User
 
 
 class BaseDal:
@@ -34,7 +35,7 @@ class TaskDal(BaseDal):
         self.db_session.add(new_task)
         await self.db_session.flush()
 
-    async def get_tasks(self, user_id: str):
+    async def get_tasks(self, user_id: str) -> list[Task]:
         query = (
             select(Task)
             .filter(Task.user_id == user_id)
@@ -52,7 +53,7 @@ class TaskDal(BaseDal):
         )
         await self.db_session.execute(query)
 
-    async def update_task(self, user_id: str, task_id: int, task_info: dict):
+    async def update_task(self, user_id: str, task_id: int, task_info: dict) -> Task:
         time_now = datetime.utcnow()
         task_info["updated_at"] = time_now
         query = (
@@ -63,7 +64,7 @@ class TaskDal(BaseDal):
         await self.db_session.execute(query)
         return await self.get_only_one_task(user_id, task_id)
 
-    async def get_only_one_task(self, user_id: str, task_id: int):
+    async def get_only_one_task(self, user_id: str, task_id: int) -> Task:
         query = select(Task).where(
             and_(Task.user_id == user_id, Task.task_id == task_id)
         )
@@ -71,7 +72,7 @@ class TaskDal(BaseDal):
         task = res.fetchone()
         return task.Task
 
-    async def complete_task(self, user_id: str, task_id: int):
+    async def complete_task(self, user_id: str, task_id: int) -> None:
         time_now = datetime.utcnow()
         query = (
             update(Task)

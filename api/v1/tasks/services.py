@@ -1,21 +1,13 @@
+from typing import List, Literal
+
 from sqlalchemy.ext.asyncio import AsyncSession
-from api.v1.shemas import Task, ShowTask, UpdateTask
-from database.dals import UserDAL, TaskDal
-from fastapi import Response
-
-from typing import List
+from api.v1.tasks.shemas import ShowTask, Task, UpdateTask
+from database.dals import TaskDal
 
 
-async def _create_new_user(db: AsyncSession) -> dict:
-    async with db as session:
-        async with session.begin():
-            user_dal = UserDAL(session)
-            new_user = await user_dal.create_user()
-            message = {"user_id": new_user.user_id}
-            return message
-
-
-async def _create_new_task(db: AsyncSession, task_info: Task, user_id: str) -> dict:
+async def _create_new_task(
+    db: AsyncSession, task_info: Task, user_id: str
+) -> dict[Literal["message"], Literal["success"] | Literal["unsuccess"]]:
     async with db as session:
         async with session.begin():
             task_dal = TaskDal(session)
@@ -27,7 +19,7 @@ async def _create_new_task(db: AsyncSession, task_info: Task, user_id: str) -> d
             return message
 
 
-async def _get_tasks(db: AsyncSession, user_id: str) -> List[ShowTask]:
+async def _get_tasks(db: AsyncSession, user_id: str) -> List[ShowTask] | None:
     async with db as session:
         async with session.begin():
             task_dal = TaskDal(session)
@@ -46,7 +38,9 @@ async def _get_tasks(db: AsyncSession, user_id: str) -> List[ShowTask]:
                 return res
 
 
-async def _delete_task(db: AsyncSession, user_id: str, task_id: int) -> dict:
+async def _delete_task(
+    db: AsyncSession, user_id: str, task_id: int
+) -> dict[Literal["message"], Literal["success"] | Literal["unsuccess"]]:
     async with db as session:
         async with session.begin():
             task_dal = TaskDal(session)
@@ -60,7 +54,7 @@ async def _delete_task(db: AsyncSession, user_id: str, task_id: int) -> dict:
 
 async def _update_task(
     db: AsyncSession, user_id: str, task_id: int, task_info: UpdateTask
-) -> ShowTask | dict:
+) -> ShowTask | dict[Literal["message"], Literal["unsuccess"]]:
     async with db as session:
         async with session.begin():
             validate_task_info = {
@@ -68,22 +62,24 @@ async def _update_task(
             }
 
             task_dal = TaskDal(session)
-            try:
-                update_task = await task_dal.update_task(
-                    user_id, task_id, validate_task_info
-                )
-                return ShowTask(
-                    task_id=update_task.task_id,
-                    title=update_task.title,
-                    description=update_task.description,
-                    status=update_task.status,
-                )
-            except:
-                message = {"message": "unsuccess"}
-                return message
+            # try:
+            update_task = await task_dal.update_task(
+                user_id, task_id, validate_task_info
+            )
+            return ShowTask(
+                task_id=update_task.task_id,
+                title=update_task.title,
+                description=update_task.description,
+                status=update_task.status,
+            )
+            # except:
+            # message = {"message": "unsuccess"}
+            # return message
 
 
-async def _complete_task(db: AsyncSession, user_id: str, task_id: int) -> dict:
+async def _complete_task(
+    db: AsyncSession, user_id: str, task_id: int
+) -> dict[Literal["message"], Literal["success"] | Literal["unsuccess"]]:
     async with db as session:
         async with session.begin():
             task_dal = TaskDal(db)
